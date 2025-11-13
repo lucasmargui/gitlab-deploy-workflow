@@ -1,0 +1,28 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  GLOBAL_VAR: "2.0"
+
+criar_imagens:
+  stage: build
+  tags:
+    - aws
+  script:
+  - docker build -t lucasmargui/app-bootcamp-devops:$GLOBAL_VAR app/.
+  - docker push lucasmargui/app-bootcamp-devops:$GLOBAL_VAR
+
+executar_imagens:
+  stage: deploy
+  needs:
+    - criar_imagens
+  tags:
+    - aws
+  before_script:
+  - docker rm $(docker ps -a -q) --force
+  script:
+  - docker run -dti --name web-server -p 80:80 lucasmargui/app-bootcamp-devops:$GLOBAL_VAR
+  after_script:
+  - docker system prune --force
+      
