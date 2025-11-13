@@ -5,6 +5,17 @@ This repository provides a step-by-step guide to creating and managing a GitLab 
 <details>
   <summary><b>📘 Table of Contents</b></summary>
 
+- [🔐 Configuring AWS CLI Access Using IAM](#configuring-aws-cli-access-using-iam)  
+  - [Step 1 – Install AWS CLI](#step-1--install-aws-cli)  
+  - [Step 2 – Create a User Group (IAM Group)](#step-2--create-a-user-group-iam-group)  
+  - [Step 3 – Create an IAM User](#step-3--create-an-iam-user)  
+  - [Step 4 – Generate Access Keys](#step-4--generate-access-keys)  
+  - [Step 5 – Configure the AWS CLI](#step-5--configure-the-aws-cli)  
+
+- [🔑 Creating SSH Key Pair](#creating-ssh-key-pair)  
+  - [Step 1 – Access the EC2 Service](#step-1--access-the-ec2-service)  
+  - [Step 2 – Create a New Key Pair](#step-2--create-a-new-key-pair)  
+
 - [☁️ Create GitLab directory/repository](#-create-gitlab-directoryrepository)
   - [Step 1 – Create GitLab Account](#step-1--create-gitlab-account)
   - [Step 2 – Create a New Project](#step-2--create-a-new-project)
@@ -27,6 +38,134 @@ This repository provides a step-by-step guide to creating and managing a GitLab 
 </details>
 
 ---
+
+## 🔐 Configuring AWS CLI Access Using IAM
+
+This section explains how to set up AWS CLI authentication using **IAM (Identity and Access Management)**, allowing secure command-line access to your AWS resources.
+
+<details> <summary>Click to show details</summary> 
+
+### Step 1 – Install AWS CLI
+
+Install and configure the **AWS Command Line Interface (AWS CLI)** — a unified tool that enables you to manage AWS services directly from your terminal.
+
+<details>
+  <summary>Click to show details</summary>
+  <img width="1130" height="622" alt="AWS CLI Installation" src="https://github.com/user-attachments/assets/43bb56e1-bf6b-40fe-bd60-e54fa4cec711" />
+</details>
+
+---
+
+### Step 2 – Create a User Group (IAM Group
+
+1. In the AWS Management Console, navigate to **IAM (Identity and Access Management)**.  
+2. On the sidebar, select **Groups → Create Group**.  
+3. Name the group **cli-users**.  
+4. Attach the **AdministratorAccess** policy (recommended only for testing environments).  
+5. Click **Create Group** to finalize.
+
+<details>
+  <summary>Click to show details</summary>
+  <img width="1047" height="225" alt="IAM Groups Navigation" src="https://github.com/user-attachments/assets/92650f80-33c6-4d39-8235-16ae47407761" />
+  <br>
+  <img width="1062" height="252" alt="IAM Group Creation" src="https://github.com/user-attachments/assets/2fad42b5-2c87-4ba2-b765-ac3d529f1ea1" />
+</details>
+
+---
+
+### Step 3 – Create an IAM User
+
+1. Still inside **IAM**, go to **Users → Add User**.  
+2. Set the username to **lucasmarguaws**.  
+3. Select the **Programmatic access** option (for CLI access).  
+4. Add the user to the previously created **cli-users** group.  
+5. Click **Create User** to complete the process.
+
+<details>
+  <summary>Click to show details</summary>
+  <img width="728" height="140" alt="IAM User Creation Step 1" src="https://github.com/user-attachments/assets/ae621945-2f48-447f-9837-8ec394ad1b0f" />
+  <br>
+  <img width="1037" height="540" alt="IAM User Group Association" src="https://github.com/user-attachments/assets/4e0ecf82-1d45-43f4-b0b5-5c740d6c08f8" />
+</details>
+
+---
+
+### Step 4 – Generate Access Keys
+
+1. After the user is created, click the username (**lucasmarguaws**) to view its details.  
+2. Go to the **Security credentials** tab.  
+3. Click **Create access key** and choose the **Command Line Interface (CLI)** usage type.  
+4. Copy and securely store the **Access Key ID** and **Secret Access Key** — they will be required for AWS CLI authentication.
+
+<details>
+  <summary>Click to show details</summary>
+  <img width="1072" height="201" alt="Access Key Creation" src="https://github.com/user-attachments/assets/19d9bdb2-5f9f-41e0-a718-2936f005f8e0" />
+  <br>
+  <img width="1036" height="185" alt="Access Key Output" src="https://github.com/user-attachments/assets/002ec936-e699-486f-8693-9a9b4d515215" />
+</details>
+
+---
+
+### Step 5 – Configure the AWS CLI
+
+Open your terminal or Command Prompt and run:
+
+```bash
+aws configure
+```
+
+Provide your credentials when prompted:
+
+```bash
+AWS Access Key ID [None]: <your-access-key-id>
+AWS Secret Access Key [None]: <your-secret-access-key>
+Default region name [None]: us-east-1
+Default output format [None]: json
+```
+
+<details> <summary>Click to show details</summary> <img width="996" height="142" alt="AWS Configure Example" src="https://github.com/user-attachments/assets/407e723f-8e12-4aae-8f38-4a7d4367a333" /> </details>
+
+✅ Once completed, your AWS CLI is fully authenticated and ready to execute AWS commands or apply Terraform scripts securely and automatically.
+
+</details>
+
+---
+
+## 🔑 Creating SSH Key Pair
+
+This section describes how to create a **Key Pair** in AWS to enable secure **SSH access** to your EC2 instance.
+
+
+<details> <summary>Click to show details</summary> 
+
+### Step 1 – Access the EC2 Service
+
+1. Open the **AWS Management Console**.  
+2. Navigate to the **EC2** service.  
+
+---
+
+### Step 2 – Create a New Key Pair
+
+1. In the left navigation pane, go to **Key Pairs** under **Network & Security**.  
+2. Click **Create key pair**.  
+3. In the **Name** field, enter: **Terraform**.  
+4. Under **File format**, select **.ppk** (for PuTTY).  
+5. Click **Create key pair**.  
+6. Your browser will automatically download the file **Terraform.ppk**.  
+
+💾 Save it in a secure location, for example:  
+
+```
+C:\Users<YourUser>.ssh\Terraform.ppk
+```
+
+✅ This key pair will later be referenced in Terraform to allow **SSH access** to the EC2 instance.
+
+</details>
+
+---
+
 
 ## ☁️ Create GitLab directory/repository
 
